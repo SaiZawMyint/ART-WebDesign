@@ -45,7 +45,9 @@ body a {
   color: #313131;
   font-family: 'Poppin Regular';
 }
-
+.wrapper .convert-tree a{
+  color: #1445ca;
+}
 .wrapper .command {
   font-size: 10px;
   font-family: 'Segoe UI';
@@ -477,6 +479,10 @@ background-color: #0000004c;
   repeating-linear-gradient(to right, #2e1aeb,#2e1aeb 10px,transparent 10px,transparent 20px) 0 calc(100% - 1px)/100% 2px no-repeat,
   radial-gradient(circle at center,#2e1aeb 0px,transparent 3px) 5px 100%/20px 5px repeat-x;
 }
+/*resizer*/
+.i-tech-resizer:hover{
+  background-color: #0000004c;
+}
 /*icons*/
 .theme-ico::before{
   content: '\f53f';
@@ -535,6 +541,9 @@ background-color: #0000004c;
 .ele-ico::before{
   content: '\f121';
   color: #02633e;
+}
+.tool-ico::before{
+  content: '\f61f';
 }
 .txt-ico{
   display: flex;
@@ -690,4 +699,41 @@ li .gp-ico::before{
 }
 .default-theme:hover{
   opacity: .6;
+}
+/*component-tools*/
+.component-tool{
+  list-style: none;
+  padding: 5px;
+}
+.component-tool .component-li{
+  float: left;
+  margin: 2px;
+  background-color: #0000004c;
+  cursor: grab;
+}
+.square{
+  width: 40px !important;
+  height: 40px !important;
+}
+.rounded-square{
+  width: 50px !important;
+  height: 40px !important;
+  border-radius: 10%;
+}
+.circle{
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+}
+.custom{
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+}
+.component-tool .component-li:hover{
+  background-color: #00000030;
 }

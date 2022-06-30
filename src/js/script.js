@@ -1,5 +1,10 @@
 
 $(function () {
+  ////prevent link click
+  //$('body').on('mousedown mouseup', 'a, a *', function (e) {
+  //  e.preventDefault();
+  //  console.log("over")
+  //});
   //nav activer
   $('.navigation').on('click', function (e) {
     e.preventDefault();
@@ -66,10 +71,7 @@ $(function () {
                 e.e.preventDefault();
               });
               //move action
-             // itech('.move-content').lightData().move();
-              itech('.move-content').UI().dragAndDrop(function (data) {
-                
-              });
+              itech('.move-content').lightData().move();
               //content-editabel
               itech('.content-editable').lightData().contentEditable();
               var design = new Design();
@@ -99,6 +101,7 @@ $(function () {
     if (cmd == "new") {
       
     }
+    
   });
   
   //splitor

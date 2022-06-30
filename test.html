@@ -1,95 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <style>
-    body {
-  /* Prevent the user selecting text in the example */
-  user-select: none;
-}
-
-#draggable {
-  width: 200px;
-  height: 20px;
-  text-align: center;
-  background: white;
-}
-
-.dropzone {
-  width: 200px;
-  height: 20px;
-  background: blueviolet;
-  margin-bottom: 10px;
-  padding: 10px;
-}
-
-  </style>
+  <link rel="stylesheet" href="src/font/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="example.css">
+  <link rel="stylesheet" href="tools.css">
 </head>
 <body>
-  <div class="dropzone">
-    <div id="draggable" draggable="true" ondragstart="event.dataTransfer.setData('text/plain',null)">
-      This div is draggable
+  <div class="wrapper">
+    <div class="box-wrapper">
+      <div class="lf-panel">
+        <ul class="accordians">
+          <li class="acc-li layouts-div active">
+            <label class="lab" for="layout-list">Layouts</label>
+            <ul class="inner-list clearfix" id="layout-list">
+              <li class="tools layout-li blank-layout" data-title="Free Layout" data-drop="normal">
+                <div class="layout-viewer"></div>
+              </li> 
+              <li class="tools layout-li two-column-layout" data-title="Two column layout" data-drop="two-column">
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+              </li>
+              <li class="tools layout-li two-row-layout" data-title="Two row layout" data-drop="two-row">
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+              </li>
+              <li class="tools layout-li float-layout clearfix" data-title="Float layout" data-drop="float">
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="acc-li components-div">
+            <label for="component-div" class="lab">Component</label>
+            <ul class="inner-list clearfix" id="component-div">
+              <li class="tools comp-li div" data-drop="div">
+                <div class="layout-viewer">
+                  <span class="fa-usage div-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li list" data-drop="list">
+                <div class="layout-viewer">
+                  <span class="fa-usage list-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li" data-drop="circle">
+                <div class="layout-viewer">
+                  <span class="fa-usage circle-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li text"  data-drop="text">
+                <div class="layout-viewer">
+                  <span class="fa-usage text-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li button" data-drop="photo">
+                <div class="layout-viewer">
+                  <span class="fa-usage photo-ico"></span>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="rg-panel">
+        <div class="editor-wrapper">
+          <div class="edition-field"></div>
+        </div>
+        
+      </div>
     </div>
   </div>
-  <div class="dropzone"></div>
-  <div class="dropzone"></div>
-  <div class="dropzone"></div>
-  <script>
-    var dragged;
-
-/* events fired on the draggable target */
-document.addEventListener("drag", function(event) {
-
-}, false);
-
-document.addEventListener("dragstart", function(event) {
-  // store a ref. on the dragged elem
-  dragged = event.target;
-  // make it half transparent
-  event.target.style.opacity = .5;
-}, false);
-
-document.addEventListener("dragend", function(event) {
-  // reset the transparency
-  event.target.style.opacity = "";
-}, false);
-
-/* events fired on the drop targets */
-document.addEventListener("dragover", function(event) {
-  // prevent default to allow drop
-  event.preventDefault();
-}, false);
-
-document.addEventListener("dragenter", function(event) {
-  // highlight potential drop target when the draggable element enters it
-  if (event.target.className == "dropzone") {
-    event.target.style.background = "purple";
-  }
-
-}, false);
-
-document.addEventListener("dragleave", function(event) {
-  // reset background of potential drop target when the draggable element leaves it
-  if (event.target.className == "dropzone") {
-    event.target.style.background = "";
-  }
-
-}, false);
-
-document.addEventListener("drop", function(event) {
-  // prevent default action (open as link for some elements)
-  event.preventDefault();
-  // move dragged elem to the selected drop target
-  if (event.target.className == "dropzone") {
-    event.target.style.background = "";
-    dragged.parentNode.removeChild( dragged );
-    event.target.appendChild( dragged );
-  }
-}, false);
-
-  </script>
+  <script src="src/js/library/jquery-3.6.0.js"></script>
+  <script src="src/js/library/jquery-ui.min.js"></script>
+  <script src="test.js"></script>
 </body>
 </html>

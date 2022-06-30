@@ -4,7 +4,7 @@ window.itech = function (selector) {
         [].forEach.call(selectors, cmd);
     };
     function storeData(dat, ele, typ) {
-        itechData.data.push({ dat });
+        itechData.data.push({ dat } ); 
         itechData.element.push({ ele });
         itechData.type.push({ typ });
     }
@@ -184,8 +184,8 @@ window.itech = function (selector) {
             });
             var evt = new IEvent();
             return {
-                move: function () {
-                    evt.dragAndDrop(data);
+                move: function (callback) {
+                    evt.dragAndDrop(data,callback);
                 },
                 contentEditable: function () {
                     var itext = new IText();
@@ -297,7 +297,10 @@ Element.prototype.DragAndDrop = function (callback) {
     }
     var drag = new DragAPI();
     drag.fired(this, function (data) {
-        console.log(data);
+        if (data.status) {
+            DragAPI.execute(data);
+        }
+        
     });
     callback(json);
 };
@@ -316,7 +319,8 @@ window.itechData = {
 var defaultTextEditorSetting,
     advanceSetting,
     ignor,
-    layoutSetting;
+    layoutSetting,
+    curEdition = null;
 $.getJSON("../src/js/setting.json", function (data) {
     defaultTextEditorSetting = data.defaultTextEditorSetting;
     advanceSetting = data.advanceSetting;
@@ -1740,7 +1744,8 @@ class DragAPI {
             parents: {
                 drag: new Object(),
                 drop: new Object()
-            }
+            },
+            status: false
         };
     }
     static markPartents = {
@@ -1748,7 +1753,20 @@ class DragAPI {
         drop: new Object(),
         rule: new Object()
     };
-
+    static resetData() {
+        return this.dataHandling = {
+            option: "",
+            data: {
+                drag: new Object(),
+                drop: new Object()
+            },
+            parents: {
+                drag: new Object(),
+                drop: new Object()
+            },
+            status: false
+        };
+    }
     fired(ele, callback) {
         var dragger = this;
         $(ele).unbind('dragstart drop');
@@ -1776,6 +1794,7 @@ class DragAPI {
             dragger.dataHandling.data = dragger.positions;
             dragger.dataHandling.parents.drag = DragAPI.markPartents.drag;
             dragger.dataHandling.parents.drop = data.parents;
+            dragger.dataHandling.status = true;
             callback(dragger.dataHandling);
             DragAPI.markPartents = {
                 drag: new Object(),
@@ -1851,6 +1870,20 @@ class DragAPI {
         }
         return x;
     }
+    static execute(data) {
+        if (data.status) {
+            var orgPos = data.data.curTarget;
+            var orgDrapE = data.parents.drag.target;
+            var orgDropE = data.parents.drop.target;
+            var dragT = $(orgDrapE).children().eq(orgPos.from)[0];
+            var dropT = $(orgDropE).children().eq(orgPos.to)[0];
+            orgDrapE.insertBefore(dropT, orgDrapE.children[orgPos.to]);
+            orgDropE.append(dragT);
+            data = DragAPI.resetData();
+            data.status = "complete";
+        }
+        return data.status;
+    }
 }
 //Events
 class IEvent {
@@ -1899,7 +1932,7 @@ class IEvent {
         itechData.events.push({ element: $ele, method: method, callback: callback });
     }
 
-    dragAndDrop(elements, limiteddragField) {
+    dragAndDrop(elements, limiteddragField, callbak) {
         var evt = this;
         var design = new Design();
         var target, ref;
@@ -1944,6 +1977,7 @@ class IEvent {
                 return;
             }
             this.classList.remove('over');
+            
         }
         function handleDragEnter(e) {
             if (!evt.validate(limiteddragField).isAccess()) {
@@ -1952,11 +1986,10 @@ class IEvent {
             !$(this).hasClass('drop-not-allow') ?
                 this.classList.add('over') :
                 null;
-        }
+        }     
         function replace(target, org) {
             var t_p = target.ele.parentElement;
             var o_p = org.ele.parentElement;
-
             t_p.insertBefore(org.ele, t_p.children[target.index]);
             o_p.insertBefore(target.ele, o_p.children[org.index]);
         }
@@ -1970,6 +2003,12 @@ class IEvent {
             return x;
         }
         function handleDrop(e) {
+            if (!dropValid(this)) {
+                console.log('Parent already has this child');
+                return false;
+            }
+            $(elements).unbind('mouseover');
+            $(elements).unbind('mouseleave');
             if ($(target).hasClass('fd')) {
                 if (!$(this).hasClass('fd')) {
                     return;
@@ -1984,13 +2023,20 @@ class IEvent {
                 return;
             }
             e.originalEvent.stopPropagation();
-            if (target !== this && !$(this).hasClass('drop-not-allow')) {
-                executeDrop(this);
-            } else if (target !== this && $(this).hasClass('drop-not-allow')
-                && $(target).hasClass('drop-not-allow')) {
+            //if (target !== this && !$(this).hasClass('drop-not-allow')) {
+            //    executeDrop(this);
+            //} else if (target !== this && $(this).hasClass('drop-not-allow')
+            //    && $(target).hasClass('drop-not-allow')) {
+            //    executeDrop(this);
+            //}
+            if ($(this).hasClass('drop-not-allow') && !$(target).hasClass('drop-not-allow')) {
+                executeMove(this);
+            } else {
                 executeDrop(this);
             }
-
+            function executeMove(ele) {  
+                console.log('move');
+            }  
             function executeDrop(ele) {
                 $(ele).removeClass('over');
                 $(ele).css('opacity', '');
@@ -2018,20 +2064,23 @@ class IEvent {
             return false;
         }
         elements.forEach(ele => {
-            $(ele).unbind('dragstart');
-            $(ele).unbind('dragover');
-            $(ele).unbind('dragenter');
-            $(ele).unbind('dragleave');
-            $(ele).unbind('dragend');
-            $(ele).unbind('drop');
+            $(ele).unbind('dragstart dragover dragenter dragleave dragend drop');
+            //$(ele).unbind('dragover');
+            //$(ele).unbind('dragenter');
+            //$(ele).unbind('dragleave');
+            //$(ele).unbind('dragend');
+            //$(ele).unbind('drop');
             $(ele).on('dragstart', handleDragStart);
             $(ele).on('dragover', handleDragOver);
             $(ele).on('dragenter', handleDragEnter);
             $(ele).on('dragleave', handleDragLeave);
             $(ele).on('dragend', handleDragEnd);
             $(ele).on('drop', handleDrop);
+           
         });
-
+        function dropValid(ele) {
+            return ($(target).parents()[1] != ele);
+        }
     }
     //drag and drop event
     featureMouseHandle($eles, callback) {
@@ -2161,6 +2210,9 @@ class IEvent {
     contentEditableEvent($ele, callback) {
         var design = new Design();
         $ele.unbind('dblclick');
+        $ele.on('click', function (e) {
+            e.preventDefault();
+        });
         $ele.on('dblclick', function (e) {
             if (!$(this).hasClass('content-editable')) {
                 return;
@@ -2172,6 +2224,11 @@ class IEvent {
                 design.removeHover($(this));
                 this.style.boxShadow = "";
             }
+            if (curEdition != null) {
+                $(curEdition).attr("contenteditable", "false");
+                curEdition = null;
+            }
+            curEdition = this;
             $(this).attr('contenteditable', 'true');
             $(this).attr('autofocus', 'true');
             var data = {
@@ -2364,13 +2421,18 @@ class Calculator {
             if (tag == 'u') {
                 spec = "text-decoration: inherit;";
             }
+            
             if ($(this).parent().text() != "") {
                 if (!$(this).parent().hasClass('itech-text')) {
                     $(this).replaceWith('<span class="itech-text" style="display:inline;' + spec + '">'
                         + $(this).text() + '</span>');
                 } else if ($(this).parent().children().length) {
-                    $(this).replaceWith('<span class="itech-text" style="display:inline;' + spec + '">'
+                    if (tag == 'a') {
+                        $(this).replaceWith('<a href="' + $(this).parent().attr('href')+'" class="itech-text" style="display:inline;' + spec + '">'+$(this).text().trim()+"</a>&npsp;");
+                    } else {
+                        $(this).replaceWith('<span class="itech-text" style="display:inline;' + spec + '">'
                         + $(this).text() + '</span>');
+                    }
                 }
             } else {
                 $(this).remove();
@@ -2386,12 +2448,16 @@ class Calculator {
                 return;
             }
             if ($(this).children().length) {
-                $(this).attr('id', 'editor-' + id);
-                id++;
-                c.analyseID(this);
-                this.classList.add('drop-not-allowed');
-                this.classList.add('main-c-selector');
-
+                    $(this).attr('id', 'editor-' + id);
+                    id++;
+                if (this.tagName == 'A') {
+                    this.setAttribute('draggable', 'true');
+                    $(this).addClass('itech-text move-content main-selector edition-contents');
+                } else {
+                    c.analyseID(this);
+                    this.classList.add('drop-not-allowed');
+                    this.classList.add('main-c-selector');
+                }
             } else {
                 $(this).attr('id', 'editor-' + id);
                 id++;
@@ -2483,7 +2549,6 @@ class UI {
     //tree menu list
     treeList(body, callback) {
         function matchChild(parent) {
-
             var ul = i_create('ul');
             ul.classList.add('layer-list');
             var evt = new IEvent();
@@ -2506,14 +2571,14 @@ class UI {
                             $(this).addClass('active');
                         }
                     });
-                    evt.onevent('popupmenu', $(lab.list), function (e) {
-                        var loc = {
-                            x: e.originalEvent.clientX,
-                            y: e.target.offsetTop + ($(e.target).children().first().outerHeight() / 2)
-                        }
-                        $(e.target).children().first().addClass('active');
-                        ui.popUpMenu(e.target, loc, 'treelist');
-                    });
+                    //evt.onevent('popupmenu', $(lab.list), function (e) {
+                    //    var loc = {
+                    //        x: e.originalEvent.clientX,
+                    //        y: e.target.offsetTop + ($(e.target).children().first().outerHeight() / 2)
+                    //    }
+                    //    $(e.target).children().first().addClass('active');
+                    //    ui.popUpMenu(e.target, loc, 'treelist');
+                    //});
                     if ($(this).children().length) {
                         lab.main.classList.add('folder');
                         lab.logo.classList.add('gp-ico');
@@ -3079,8 +3144,6 @@ class TextEditor {
             { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon hyper-link-ico', title: 'Create Link' },
             { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon close-ico', title: 'close' }
         );
-
-
         design.draw($(navs), design.type.NAVIGTION_LIST, { margin: 0 });
         i_append(editor, navs);
 
@@ -3279,42 +3342,8 @@ class TextEditor {
                     break;
                 case 'link':
                     isFloatListBoxOpen ? $('.itech-float-list-box').remove() : null;
-                    var inp = design.drawFloatListBox(1, 'input');
-                    parent.append(inp);
-                    design.style(parent, { 'position': 'relative' });
-                    var cust = inp.firstElementChild;
-                    cust.value = "https:/" + window.getSelection().toString().trim();
-                    var node = getParentSelection();
-                    var span = createRange('a');
-                    span.href = "https:/" + cust.value;
-                    var orgV = {
-                        'background-color': node.style.backgroundColor,
-                        'color': node.style.color
-                    };
-
-                    design.style(span, { 'background-color': 'blue', 'color': '#FFFFFF' });
-                    cust.focus();
-                    $(cust).on('click mouseup mousedown', function (e) {
-                        e.stopPropagation();
-                    });
-                    $(cust).on('input', function (e) {
-                        e.preventDefault();
-                        span.href = this.value;
-                    });
-                    $(cust).on('keydown', function (e) {
-                        e.stopPropagation();
-                        if (e.key === 'Enter' || e.keyCode === 13) {
-                            e.preventDefault();
-                            design.style(span, orgV);
-                            mianEdit.restoreDefault();
-                            return false;
-                        }
-                    });
-                    $(cust).on('blur', function (e) {
-                        e.preventDefault();
-                        design.style(span, orgV);
-                        mianEdit.restoreDefault();
-                    });
+                    let url = prompt("Enter link address : ","https:\/\/"+window.getSelection().toString().trim());
+                    execAddition("createLink", url);
                     break;
                 case 'close':
                     document.execCommand(null, false, null);
@@ -3541,12 +3570,3 @@ class LightBox {
         $(this.model).remove();
     }
 }
-//var d = 1000;
-//var m = 10000;
-//function currency(m) {
-//    return m / d;
-//}
-//function percentage(m) {
-//    return (2 /100)  * currency(m);
-//}
-//console.log(currency(m) - percentage(m));
