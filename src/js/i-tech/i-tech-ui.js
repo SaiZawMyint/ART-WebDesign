@@ -1,3 +1,4 @@
+
 window.itech = function (selector) {
     var selectors = _(selector);
     function command(cmd) {
@@ -158,7 +159,7 @@ window.itech = function (selector) {
                 },
                 hover: function (css) {
                     command(function (ele) {
-                        design.addHover($(ele), css);
+                       // design.addHover($(ele), css);
                     });
                 }
             }
@@ -316,17 +317,21 @@ window.itechData = {
     type: [],
     events: []
 };
-var defaultTextEditorSetting,
-    advanceSetting,
-    ignor,
+var defaultTextEditorSetting ,
+    advanceSetting ,
+    ignor ,
     layoutSetting,
+    hoverSettings,
     curEdition = null;
+
 $.getJSON("../src/js/setting.json", function (data) {
     defaultTextEditorSetting = data.defaultTextEditorSetting;
     advanceSetting = data.advanceSetting;
     ignor = data.ignor;
     layoutSetting = data.layoutSetting;
+    hoverSettings = data.defaultHoverSetting;
 });
+
 var isTextEditorOpen = false,
     isFloatListBoxOpen = false;
 var temp = {
@@ -782,7 +787,8 @@ class ModalBox {
                 'width': '20px', 'height': '20px', 'cursor': 'pointer',
                 'border-radius': '50%', 'float': 'right'
             });
-        designer.addHover($cls, { 'background-color': '#0000004c', 'color': 'red' });
+        $cls.addClass('close-btn-hover');
+       // designer.addHover($cls, { 'background-color': '#0000004c', 'color': 'red' });
 
         this.$bdy.css({ postion: 'relative' });
         $hdr.css({
@@ -841,7 +847,8 @@ class ModalBox {
                 $b.attr('data-i-tech-modal', t);
                 var drawer = new Design();
                 drawer.draw($b, drawer.type.BUTTON, null);
-                drawer.addHover($b, { 'background-color': '#0000004c' });
+                $b.addClass('btn-hover');
+            //    drawer.addHover($b, { 'background-color': '#0000004c' });
                 this.btns[btn.name] = $b;
                 buttons.push($b);
             }
@@ -855,7 +862,8 @@ class ModalBox {
             $b.attr('data-i-tech-modal', t);
             var drawer = new Design();
             drawer.draw($b, drawer.type.BUTTON, null);
-            drawer.addHover($b, { 'background-color': '#0000004c' });
+            $b.addClass('btn-hover');
+        //    drawer.addHover($b, { 'background-color': '#0000004c' });
             this.btns[btns.name] = $b;
             buttons.push($b);
         }
@@ -1199,7 +1207,7 @@ class Design {
         if (type == this.type.HEADER_SECTION) {
             $ele.css({
                 width: '100%',
-                background: 'url(src/img/img_nb_01.jfif) no-repeat',
+                background: 'url(src/img/img_dark_template_01.jpg) no-repeat',
                 'background-size': '100%',
                 'background-position': 'top',
 
@@ -1257,9 +1265,13 @@ class Design {
         return box;
     }
     //draw default ui
-    addHover($ele, before) {
-        this.removeHover($ele);
-        $ele.on('mouseover mouseout', function (e) {
+    /**
+     * 
+     * @param {String} elements 
+     * @param {JSON} before 
+     */
+    addHover(elements = new String(), before) {
+        $(document).on('mouseover mouseout', elements, function (e) {
             if (e.type === 'mouseover') {
                 e.stopPropagation();
                 for (var key in before) {
@@ -1287,7 +1299,7 @@ class Design {
     }
     //addHover
     removeHover($ele) {
-        $ele.unbind('mouseover mouseout');
+       // $ele.unbind('mouseover mouseout');
     }
     addFocus($ele, before) {
         var org_style = [];
@@ -1946,7 +1958,13 @@ class IEvent {
             design.style(this, { 'opacity': '0.4' });
             t_index = markPos(target.parentElement, target);
             if (!$(this).hasClass('edition-contents')) {
-                ref = i_id(this.getAttribute('data-edition-list'));
+                var sel = this;
+                console.log(this.treeParentFolder().hasClass('link'))
+                if (this.treeParentFolder().hasClass('link')) {
+                    sel = this.treeParentFolder().element();
+                }
+                console.log(sel);
+                ref = i_id(sel.getAttribute('data-edition-list'));
                 r_index = markPos(ref.parentElement, ref);
             } else {
                 $('.layer').find('*').filter('li').each(function () {
@@ -2275,7 +2293,8 @@ class IEvent {
                         ele.scrollLeft = 0;
                         $(ele).css('text-overflow', 'ellipsis');
                     } else {
-                        design.addHover($(this), { "box-shadow": "inset 0px 0px 0px 2px lightblue" });
+                        $(this).addClass('primary-content');
+                      //  design.addHover($(this), { "box-shadow": "inset 0px 0px 0px 2px lightblue" });
                     }
                     $(ele).unbind('click');
                     $(ele).removeAttr('contenteditable');
@@ -2586,6 +2605,9 @@ class UI {
                         lab.list.classList.add('fd');
                         $(this).removeClass('itech-text');
                         var tag = this.tagName.toLowerCase();
+                        if (tag == 'a') {
+                            lab.main.classList.add('link');
+                        }
                         lab.content.innerHTML = tag;
                         lab.list.appendChild(matchChild(this));
                     } else {
@@ -2713,8 +2735,8 @@ class UI {
             itech('.content-editable').lightData().contentEditable();
             itech('.move-content').lightData().move();
             var design = new Design();
-            design.addHover($('.edition-contents.content-editable'),
-                { 'box-shadow': '0px 0px 0px 2px lightblue' });
+            //design.addHover($('.edition-contents.content-editable'),
+            //    { 'box-shadow': '0px 0px 0px 2px lightblue' });
             if (!$(branch).hasClass('active')) {
                 $(branch).children().first()[0].click();
             }
@@ -2871,7 +2893,8 @@ class UI {
                                 'box-sizing': 'border-box',
                                 'cursor': 'pointer'
                             });
-                            design.addHover($(val.element), { 'background-color': '#0000004c' });
+                            $(val.element).addClass('btn-hover');
+                           // design.addHover($(val.element), { 'background-color': '#0000004c' });
                             evt.onevent('click', $(val.element), function (e) {
                                 //   e.stopPropagation();
 
@@ -2930,7 +2953,7 @@ class UI {
             hdr_p.style.color = "#f5f5dc";
             var img = i_create('img');
             img.alt = "My Photo";
-            img.src = "/src/img/img_default_template.jpg";
+            img.src = "/src/img/img_dark_template_01.jpg";
 
             var navs = i_lists({ li: 'li', child: 'a', content: 'Home' },
                 { li: 'li', child: 'a', content: 'Simple' },
@@ -3110,7 +3133,8 @@ class UI {
             btns.forEach(btn => {
                 var button = i_create('button');
                 designer.draw($(button), designer.type.BUTTON);
-                designer.addHover($(button), { backgroundColor: '#0000004c' });
+                $(button).addClass('btn-hover')
+              //  designer.addHover($(button), { backgroundColor: '#0000004c' });
                 button.innerHTML = btn;
                 $(button).attr('data-btns', btn);
                 this.btns.push(button);
@@ -3422,8 +3446,8 @@ class TextEditor {
         }
         function removeUnused() {
             $('.qr-edit').each(function () {
-                if (this.innerHTML == "") {
-                    this.remove();
+                if (this.innerHTML.toString().trim() == "") {
+                    $(this).remove();
                 }
             });
         }
@@ -3551,7 +3575,8 @@ class LightBox {
                     'width': '20px', 'height': '20px', 'cursor': 'pointer',
                     'border-radius': '50%', 'position': 'absolute', 'top': '5px', 'right': '5px'
                 });
-            this.designer.addHover($(icon), { 'background-color': '#0000004c', 'color': 'red' });
+            $(icon).addClass('cls-btn-hover');
+            //this.designer.addHover($(icon), { 'background-color': '#0000004c', 'color': 'red' });
             $(icon).on('click', function (e) {
                 e.stopPropagation();
                 $('.data-model-wrapper')[0].click();
@@ -3569,4 +3594,30 @@ class LightBox {
     distory() {
         $(this.model).remove();
     }
+}
+
+//elements prototype functions
+Element.prototype.treeParentFolder = function () {
+    var curP = this.parentElement;
+    var result = curP.prev();
+    return {
+        element: function () { return result },
+        class: function () { return $(result).attr('class') },
+        hasClass: function (cls) { return $(result).hasClass(cls) },
+        type: function () { return result.tagName }
+    };
+}
+Element.prototype.prev = function () {
+    var previousSibling = this.previousSibling;
+    while (previousSibling && previousSibling.nodeType != 1) {
+        previousSibling = previousSibling.previousSibling
+    }
+    return previousSibling;
+}
+Element.prototype.next = function () {
+    var nextSibling = this.nextSibling;
+    while (nextSibling && nextSibling.nodeType != 1) {
+        nextSibling = nextSibling.nextSibling
+    }
+    return previousSibling;
 }

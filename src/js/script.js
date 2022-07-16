@@ -5,6 +5,12 @@ $(function () {
   //  e.preventDefault();
   //  console.log("over")
   //});
+  var globalDesign = new Design();
+  for (let key in hoverSettings) {
+    if (Object.hasOwnProperty.call(hoverSettings, key)) {
+      globalDesign.addHover(key, hoverSettings[key]);
+    }
+  }
   //nav activer
   $('.navigation').on('click', function (e) {
     e.preventDefault();
@@ -74,7 +80,7 @@ $(function () {
               itech('.move-content').lightData().move();
               //content-editabel
               itech('.content-editable').lightData().contentEditable();
-              var design = new Design();
+              //var design = new Design();
               $('.edition-contents').on('click', function (e) {
                 e.stopPropagation();
                 var setting = {
@@ -86,8 +92,7 @@ $(function () {
                 var ui = new UI();
                 ui.openBranch(reftr);
             });
-              design.addHover($('.edition-contents.content-editable'),
-                { 'box-shadow': '0px 0px 0px 2px lightblue' });
+              
               itech('.convert-tree a').event('click', function (e) {
                 e.preventDefault();
               });
@@ -127,17 +132,13 @@ $(function () {
 
 //main editor
 function updateMainEditor(cmd) {
-  var design = new Design();
   if (cmd == 'selector') {
     $('.main-selector').addClass('content-editable');
-    
-    design.removeHover($('.c-selector-active'));
     $('.main-c-selector').removeClass('c-selector-active');
   }
   if (cmd == 'c-selector') {
     $('.main-selector').removeClass('content-editable');
     $('.main-c-selector').addClass('c-selector-active');
-    design.addHover($('.c-selector-active'), {'box-shadow':'inset 0px 0px 0px 2px lightblue'});
   }
   
 }
