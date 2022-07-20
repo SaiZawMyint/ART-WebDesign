@@ -30,10 +30,8 @@ window.itech = function (selector) {
             command(function (ele) {
                 var splitor = new Splitor();
                 splitor.addComponent($(ele), $left, $right, setting);
-
                 storeData({ param: { left: $left, right: $right, setting: setting } }, { dom: ele, spliteBy: splitor }, { name: 'splitor' });
             });
-
         },
         folder: function () {
             var evt = new IEvent();
@@ -135,6 +133,9 @@ window.itech = function (selector) {
                 $(ele).css(designer.getAllStyle($ele));
                 storeData({ param: { ele: $ele } }, { dom: ele, copyBy: designer }, { name: 'copyStyle' });
             });
+        },
+        detail: function (data) {
+            
         },
         event: function (method, callback) {
             command(function (element) {
@@ -402,6 +403,7 @@ class Resizer {
         this.$ele;
         this.$resizer;
         this.key;
+        this.isResizing = false;
     }
     addResizer($ele, direction, cusCss) {
         $ele.css({ 'position': 'relative', 'z-index': '1' });
@@ -454,25 +456,26 @@ class Resizer {
     }
 
     action() {
+        var resize = this;
         var key = this.key;
-        var isResizing = false, lastDown = 0, curwidth = 0;
+        resize.isResizing = false, lastDown = 0, curwidth = 0;
         var $parent = this.$ele;
         curwidth = $parent.outerWidth();
         $(this.$resizer).on('mousedown', function (e) {
-            isResizing = true;
+            resize.isResizing = true;
             lastDown = e.clientX;
             curwidth = $parent.outerWidth();
         });
         $(document).on('mousemove', function (e) {
             e.preventDefault();
-            if (!isResizing) {
+            if (!resize.isResizing) {
                 return;
             }
             $('body').css('cursor', getCursor(key));
             key == 'right' || key == 'left' ? resizeWidth(key, e) :
                 key == 'top' || key == 'bottom' ? resizeHeight(key, e) : null;
         }).on('mouseup', function (e) {
-            isResizing = false;
+            resize.isResizing = false;
             $('body').css('cursor', 'default');
         });
         function resizeWidth(direction, e) {
@@ -509,6 +512,7 @@ class Splitor {
             resizeHandle: true,
             navigator: { nav: null, action: '' }
         };
+        this.isResizing = false;
     }
 
     refreshSplitor() {
@@ -705,7 +709,7 @@ class Splitor {
         });
     }
     action(resizer, direction) {
-        var isResizing = false;
+        var splitor = this;
         var $rlf = this.$left;
         var $rgh = this.$right;
         var $parent = this.$parent;
@@ -713,12 +717,12 @@ class Splitor {
         var cur = 'width';
         direction == 'splitX' ? cur = 'width' : cur = 'height';
         resizer.addEventListener('mousedown', function (e) {
-            isResizing = true;
+            splitor.isResizing = true;
         });
 
         document.addEventListener(`move`, function (e) {
             e.preventDefault();
-            if (!isResizing) {
+            if (!splitor.isResizing) {
                 return;
             }
             $rlf.css('transition', 'unset');
@@ -729,7 +733,7 @@ class Splitor {
         });
         document.addEventListener('up', function (e) {
             e.stopPropagation();
-            isResizing = false;
+            splitor.isResizing = false;
             $('body').css('cursor', 'default');
         });
         function getCursor(w) {
@@ -2590,14 +2594,14 @@ class UI {
                             $(this).addClass('active');
                         }
                     });
-                    //evt.onevent('popupmenu', $(lab.list), function (e) {
-                    //    var loc = {
-                    //        x: e.originalEvent.clientX,
-                    //        y: e.target.offsetTop + ($(e.target).children().first().outerHeight() / 2)
-                    //    }
-                    //    $(e.target).children().first().addClass('active');
-                    //    ui.popUpMenu(e.target, loc, 'treelist');
-                    //});
+                    evt.onevent('popupmenu', $(lab.list), function (e) {
+                        var loc = {
+                            x: e.originalEvent.clientX,
+                            y: e.target.offsetTop + ($(e.target).children().first().outerHeight() / 2)
+                        }
+                        $(e.target).children().first().addClass('active');
+                        ui.popUpMenu(e.target, loc, 'treelist');
+                    });
                     if ($(this).children().length) {
                         lab.main.classList.add('folder');
                         lab.logo.classList.add('gp-ico');
@@ -3595,7 +3599,14 @@ class LightBox {
         $(this.model).remove();
     }
 }
-
+class Details{
+    constructor(data) {
+        this.data = data;
+    }
+    init() {
+        
+    }
+}
 //elements prototype functions
 Element.prototype.treeParentFolder = function () {
     var curP = this.parentElement;
