@@ -1,6 +1,7 @@
 
 window.itech = function (selector) {
     var selectors = _(selector);
+    
     function command(cmd) {
         [].forEach.call(selectors, cmd);
     };
@@ -133,6 +134,9 @@ window.itech = function (selector) {
                 $(ele).css(designer.getAllStyle($ele));
                 storeData({ param: { ele: $ele } }, { dom: ele, copyBy: designer }, { name: 'copyStyle' });
             });
+        },
+        create: function (tag) {
+            return i_create(tag);
         },
         detail: function (data) {
             
@@ -287,6 +291,9 @@ window.itech = function (selector) {
                 all.push(ele);
             });
             return all;
+        },
+        design: function () {
+            return new Design();
         }
     }
 };
@@ -379,7 +386,8 @@ function i_lists(...lists) {
 
             ('content' in list) ?
                 child.innerHTML = list.content : null;
-
+            ('style' in list) ?
+                $(child).css(list.style) : null;
             design.style(child, { display: 'inline-block' });
             i_append(li, child);
             ('class' in list) ?
@@ -1274,9 +1282,10 @@ class Design {
      * @param {String} elements 
      * @param {JSON} before 
      */
-    addHover(elements = new String(), before) {
-        $(document).on('mouseover mouseout', elements, function (e) {
-            if (e.type === 'mouseover') {
+    addHover(elements = new String(), before,actions) {
+        console.log(elements)
+        $(document).on('mouseenter mouseout', elements, function (e) {
+            if (e.type === 'mouseenter') {
                 e.stopPropagation();
                 for (var key in before) {
                     if (Object.hasOwnProperty.call(before, key)) {
@@ -1288,14 +1297,25 @@ class Design {
                         $(this).css(key, value);
                     }
                 }
+                actions({target:this,opt:true});
             }
             if (e.type === 'mouseout') {
                 e.stopPropagation();
+                //var event = e.toElement || e.relatedTarget;
+                //console.log(event);
+                //if (this.contains(event)) {
+                //    return;
+                //}
+                var t = e.toElement || e.relatedTarget;
+                if (this.contains(t)) {
+                    return;
+                }
                 for (var key in before) {
                     if (Object.hasOwnProperty.call(before, key)) {
                         $(this).css(key, '');
                     }
                 }
+                actions({target:this,opt:false});
             }
 
         });
@@ -3161,16 +3181,16 @@ class TextEditor {
         var editor = i_create('div');
         design.draw($(editor), design.type.TEXTEDITOR_BOX, { 'display': 'none' });
         editor.classList.add('itech-text-editor-box');
-        var navs = i_lists({ li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon bold-ico', title: 'Bold' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon italic-ico', title: 'Italic' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon underline-ico', title: 'Undeline' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon font-ico', title: 'Font' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon edit-ico', title: 'Edit Content' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon color-ico', title: 'Color' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon hiliteColor-ico', title: 'Hightlight Color' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon align-ico', title: 'Text Align' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon hyper-link-ico', title: 'Create Link' },
-            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon close-ico', title: 'close' }
+        var navs = i_lists({ li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon bold-ico', title: 'Bold',style:{'min-width' : '35px'}},
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon italic-ico', title: 'Italic',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon underline-ico', title: 'Undeline',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon font-ico', title: 'Font',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon edit-ico', title: 'Edit Content',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon color-ico', title: 'Color',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon hiliteColor-ico', title: 'Hightlight Color',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon align-ico', title: 'Text Align',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon hyper-link-ico', title: 'Create Link',style:{'min-width' : '35px'} },
+            { li: 'li', child: 'a', class: 'font-awesome-usage itech-text-editor-icon close-ico', title: 'close',style:{'min-width' : '35px'} }
         );
         design.draw($(navs), design.type.NAVIGTION_LIST, { margin: 0 });
         i_append(editor, navs);
@@ -3472,6 +3492,14 @@ class TextEditor {
         }
         isTextEditorOpen = false;
         isFloatListBoxOpen = false;
+    }
+}
+class Editors{
+    constructor(setting) {
+        this.setting = setting;
+    }
+    popUpSetting(items) {
+        $(document).on('')
     }
 }
 //text 

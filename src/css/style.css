@@ -892,3 +892,26 @@ li .gp-ico::before{
 .d-inp-f .inp.select:hover{
   background-color: #c5cae9a5;
 }
+.float-icon{
+  overflow: hidden;
+  cursor: pointer;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: lightblue;
+  height: fit-content;
+  display: flex;
+}
+.float-icon::before{
+  color: #000;
+  font-size: 15px;
+  padding: 5px;
+  transition: all .4s;
+  max-height: 100%;
+  box-sizing: border-box;
+}
+.float-icon:hover::before{
+  transform: rotate(45deg);
+}
+
+
