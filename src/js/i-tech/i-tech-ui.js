@@ -147,28 +147,6 @@ window.itech = function (selector) {
                 ievent.onevent(method, $(element), callback);
             });
         },
-        design: function () {
-            var $element;
-            command(function (ele) {
-                $element = $(ele);
-            });
-            var design = new Design();
-            return {
-                list: function () {
-                    return {
-                        treeList: function (listData) {
-
-                            design.drawList($element).tree(listData);
-                        }
-                    }
-                },
-                hover: function (css) {
-                    command(function (ele) {
-                       // design.addHover($(ele), css);
-                    });
-                }
-            }
-        },
         tree: function () {
             var ui = new UI();
             return {
@@ -294,6 +272,13 @@ window.itech = function (selector) {
         },
         design: function () {
             return new Design();
+        },
+        getStyle:function(){
+            var data;
+            command(function(element){
+                data = new Design().getAllStyle(element);
+            })
+            return data;
         }
     }
 };
@@ -1390,13 +1375,13 @@ class Design {
         $ele.append($div);
     }
     //clearfix
-    getAllStyle($ele) {
+    getAllStyle(ele) {
         var sheets = document.styleSheets, orginal = {};
         for (var i in sheets) {
             var rules = sheets[i].rules || sheets.cssRules;
             for (var r in rules) {
-                if ($ele.is(rules[r].selectorText)) {
-                    orginal = $.extend(orginal, cssProperty(rules[r].style), cssProperty($ele.attr('style')));
+                if ($(ele).is(rules[r].selectorText)) {
+                    orginal = $.extend(orginal, cssProperty(rules[r].style), cssProperty($(ele).attr('style')));
                 }
             }
         }
@@ -1517,6 +1502,47 @@ class Design {
         }
 
     }
+    /**
+     * Get element's computed style
+     * @param {Element} element 
+     */
+    getAllCssProperty(element){
+        console.log(element)
+        var css = window.getComputedStyle(element.currentElement);
+        var data = [];
+        for(let i = 0; i < css.length;i++){
+           // if(css.getPropertyValue(i)=='') continue;
+            var style = {key:'',value:''};
+            style.key = (css[i]);
+            style.value = css.getPropertyValue(i);
+            data.push(style);
+        }
+        return data;
+    }
+    // getStyle(el, styleProp) {
+    //     var value, defaultView = (el.ownerDocument || document).defaultView;
+    //     if (defaultView && defaultView.getComputedStyle) {
+    //       styleProp = styleProp.replace(/([A-Z])/g, "-$1").toLowerCase();
+    //       return defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
+    //     } else if (el.currentStyle) { 
+    //       styleProp = styleProp.replace(/\-(\w)/g, function(str, letter) {
+    //         return letter.toUpperCase();
+    //       });
+    //       value = el.currentStyle[styleProp];
+    //       if (/^\d+(em|pt|%|ex)?$/i.test(value)) { 
+    //         return (function(value) {
+    //           var oldLeft = el.style.left, oldRsLeft = el.runtimeStyle.left;
+    //           el.runtimeStyle.left = el.currentStyle.left;
+    //           el.style.left = value || 0;
+    //           value = el.style.pixelLeft + "px";
+    //           el.style.left = oldLeft;
+    //           el.runtimeStyle.left = oldRsLeft;
+    //           return value;
+    //         })(value);
+    //       }
+    //       return value;
+    //     }
+    //   }
 }
 //treeList
 class Tree {

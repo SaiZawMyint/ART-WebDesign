@@ -11,13 +11,18 @@ $(function () {
           $(data.target).css('position', 'relative');
           $(".itps").remove();
           var itps = itech().create("span");
+          $(itps).css({'max-height': data.target.offsetHeight+"px"});
           $(itps).addClass("font-awesome-usage setting-ico float-icon itps");
           $(itps).attr("data-itps", data.target.id);
           $(itps).on("click", function (e) {
             e.stopPropagation();
             console.log("click",$(this).data("itps"));
+            itech('.detail-config-box').style({'display':'block'});
+            itech('.editor-field').style({ 'width': 'calc(100% - 300px)' });
+            getElementStyle(data.target);
           })
           $(data.target).append(itps);
+          
         } else {
           $(".itps").remove();
         }
@@ -161,4 +166,12 @@ function updateMainEditor(cmd) {
     $('.main-selector').removeClass('content-editable');
     $('.main-c-selector').addClass('c-selector-active');
   }
+}
+
+/**
+ * 
+ * @param {Element} id 
+ */
+function getElementStyle(selector){
+  console.log(itech().design().getAllStyle(selector));
 }
