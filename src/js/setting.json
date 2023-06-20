@@ -1,0 +1,28 @@
+{
+  "defaultTextEditorSetting": {
+    "textSelector": true,
+    "containerSelector": false,
+    "move": false,
+    "delete": false,
+    "letter-spacing": "2px",
+    "lineheight": "2",
+    "text-shadow": "2px 2px 4px currentColor"
+  },
+  "advanceSetting":{
+    "last": 0,
+    "delay": 20
+  },
+  "ignor":{"BR":0},
+  "layoutSetting": {
+    "layout": 0,
+    "align": 0
+  },
+  "defaultHoverSetting":{
+    ".close-btn-hover":{ "background-color": "#0000004c", "color": "red" },
+    ".btn-hover":{"background-color": "#0000004c"},
+    ".primary-content": { "box-shadow": "inset 0px 0px 0px 2px lightblue" },
+    ".edition-contents.content-editable": { "box-shadow": "inset 0px 0px 0px 2px lightblue" },
+    ".edition-contents .content-editable": { "box-shadow": "inset 0px 0px 0px 2px lightblue" },
+    ".c-selector-active": { "box-shadow": "inset 0px 0px 0px 2px lightblue" }
+  }
+}

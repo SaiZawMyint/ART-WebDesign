@@ -1,0 +1,261 @@
+body {
+  user-select: none;
+  width: 100%;
+}
+body, body * {
+  font-family: 'Courier New', Courier, monospace;
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 100px 0px;
+  position: absolute;
+}
+.wrapper ul{
+  list-style: none;
+}
+.clearfix::after{
+  clear: both;
+  height: 0;
+  display: block;
+  visibility: hidden;
+  font-size: 0;
+  content: '';
+}
+.box-wrapper{
+  width: 60%;
+  height: 80%;
+  border-radius: 5px;
+  box-shadow: 1px 2px 3px #0000004c;
+  display: flex;
+  flex-direction: row;
+  margin: 50px auto;
+}
+.box-wrapper .lf-panel{
+  width: 30%;
+  background-color: #034064ca;
+  padding: 15px;
+}
+.box-wrapper .rg-panel{
+  width: 70%;
+  padding: 15px;
+  background-color: #3449f55c;
+}
+.editor-wrapper{
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.edition-field{
+  width: 100%;
+  min-height: 100%;
+  height: fit-content;
+  padding: 1px;
+  background-color: #FFFFFF;
+  overflow: auto;
+}
+/*accordian*/
+.accordians .acc-li{
+  width: 100%;
+  color: #FFFFFF;
+  padding: 5px;
+}
+.acc-li .inner-list{
+  height: 0;
+  transition: height .4s;
+  overflow: hidden;
+}
+.acc-li.active .inner-list{
+  height: fit-content;
+}
+.inner-list{
+  width: 100%;
+  padding: 5px 5px 5px 10px;
+}
+.inner-list .tools{
+  width: 45px;
+  height: 45px;
+  border: 1px solid #0000004c;
+  float: left;
+  margin: 5px 5px 0px 0px;
+  padding: 2px;
+}
+.inner-list .tools::before{
+  line-height: 0;
+  font-size: 80%;
+}
+.layout-viewer{
+  background-color: #0000004c;
+  display: block;
+  border: 1px solid #0000001a;
+}
+/*layouts*/
+.blank-layout .layout-viewer{
+  width: 100%;
+  height: 100%;
+}
+
+.float-layout .layout-viewer{
+  float: left;
+  width: calc(50% - 1px);
+  height: calc(50% - 1px);
+  margin: 0px 2px 2px 0px;
+}
+.float-layout .layout-viewer:last-child{
+  background-color: transparent;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.float-layout .layout-viewer:last-child span{
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: #0000004c;
+  margin: 1px;
+}
+.float-layout .layout-viewer:nth-child(2n){
+  margin: 0px 0px 2px 0px;
+}
+.two-column-layout{
+  display: flex;
+  justify-content: space-between;
+}
+.two-column-layout .layout-viewer{
+  width: calc(50% - 1px);
+}
+
+.two-row-layout{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.two-row-layout .layout-viewer{
+  height: calc(50% - 1px);
+}
+/*layouts end*/
+.tools.comp-li{
+  width: 30px;
+  height: 30px;
+}
+.comp-li .layout-viewer{
+  background-color: transparent;
+  border: 0;
+}
+.div .layout-viewer{
+  width: 100%;
+  height: 100%;
+}
+.comp-li .layout-viewer{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.list .layout-viewer ul{
+  width: 80%;
+}
+.list .layout-viewer ul li{
+  font-size: 10px;
+}
+/*dragging handler*/
+.tools.ui-draggable-dragging{
+  opacity: .5;
+}
+.text .layout-viewer{
+  justify-content: flex-start;
+  border: 1px solid #0000004c;
+}
+.tools.comp-li.text{
+  width: 45px;
+  height: 30px;
+}
+/*fontawesone usages*/
+.layout-viewer .fa-usage{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.layout-viewer .fa-usage::before{
+  font-size: 23px;
+  color: #00000065;
+  line-height: 0;
+}
+.fa-usage::before{
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  content: '';
+}
+.div-ico::before{
+  content: '\f45c';
+}
+.list-ico::before{
+  content: '\f0ca';
+}
+.circle-ico::before{
+  content: '\f111';
+}
+.text-ico::before{
+  content: '\f246';
+  font-size: 10px !important;
+}
+.photo-ico::before{
+  content: '\f03e';
+  font-size: 25px !important;
+}
+.style-ico::before{
+  content: '\f1fc' !important;
+}
+.setting-ico::before{
+  content: '\f013' !important;
+}
+.move-ico::before{
+  content: '\f047' !important;
+}
+.ed{
+  position: relative;
+}
+/*pop up editor*/
+.pop-up{
+  position: absolute;
+  top: -30px;
+  left: calc(100% - 57px);
+  margin: 0 !important;
+  width: fit-content;
+  display: flex;
+  background-color: #0000004c;
+  flex-direction: row;
+  transition: all .4s;
+}
+.pop-up .fa-usage{
+  margin: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ 
+}
+.pop-up .fa-usage::before{
+  content: '';
+  line-height: 0;
+  font-size: 80%;
+}
+.pop-up .fa-usage:hover{
+  color: rgb(32, 169, 232);
+  cursor: pointer;
+}
+.comp-li.ed:hover > .pop-up{
+  top: 0;
+}
+
+
+

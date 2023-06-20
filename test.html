@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="src/font/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="example.css">
+  <link rel="stylesheet" href="tools.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div class="box-wrapper">
+      <div class="lf-panel">
+        <ul class="accordians">
+          <li class="acc-li layouts-div active">
+            <label class="lab" for="layout-list">Layouts</label>
+            <ul class="inner-list clearfix" id="layout-list">
+              <li class="tools layout-li blank-layout" data-title="Free Layout" data-drop="normal">
+                <div class="layout-viewer"></div>
+              </li> 
+              <li class="tools layout-li two-column-layout" data-title="Two column layout" data-drop="two-column">
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+              </li>
+              <li class="tools layout-li two-row-layout" data-title="Two row layout" data-drop="two-row">
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+              </li>
+              <li class="tools layout-li float-layout clearfix" data-title="Float layout" data-drop="float">
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer"></div>
+                <div class="layout-viewer">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li class="acc-li components-div">
+            <label for="component-div" class="lab">Component</label>
+            <ul class="inner-list clearfix" id="component-div">
+              <li class="tools comp-li div" data-drop="div">
+                <div class="layout-viewer">
+                  <span class="fa-usage div-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li list" data-drop="list">
+                <div class="layout-viewer">
+                  <span class="fa-usage list-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li" data-drop="circle">
+                <div class="layout-viewer">
+                  <span class="fa-usage circle-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li text"  data-drop="text">
+                <div class="layout-viewer">
+                  <span class="fa-usage text-ico"></span>
+                </div>
+              </li>
+              <li class="tools comp-li button" data-drop="photo">
+                <div class="layout-viewer">
+                  <span class="fa-usage photo-ico"></span>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="rg-panel">
+        <div class="editor-wrapper">
+          <div class="edition-field"></div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <script src="src/js/library/jquery-3.6.0.js"></script>
+  <script src="src/js/library/jquery-ui.min.js"></script>
+  <script src="test.js"></script>
+</body>
+</html>
